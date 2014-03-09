@@ -1,36 +1,55 @@
 /*global describe, beforeEach, it */
 'use strict';
+
+var fs = require('fs');
 var path = require('path');
 var helpers = require('yeoman-generator').test;
+var test = require('tape');
 
-describe('module generator', function () {
-  beforeEach(function (done) {
-    helpers.testDirectory(path.join(__dirname, 'temp'), function (err) {
-      if (err) {
-        return done(err);
-      }
+test('module generator', function (t) {
+    var app;
 
-      this.app = helpers.createGenerator('module:app', [
-        '../../app'
-      ]);
-      done();
-    }.bind(this));
-  });
+    function setup (done) {
+        helpers.testDirectory(path.join(__dirname, 'temp'), function (err) {
+            if (err) {
+                return done(err);
+            }
 
-  it('creates expected files', function (done) {
-    var expected = [
-      // add files you expect to exist here.
-      '.jshintrc',
-      '.editorconfig'
-    ];
+            app = helpers.createGenerator('module:app', [
+                '../../app'
+            ]);
+            done();
+        });
+    }
 
-    helpers.mockPrompt(this.app, {
-      'someOption': true
+    t.test('creates expected files', function (t) {
+
+        setup(function () {
+            var expected = [
+                // add files you expect to exist here.
+                '.jshintrc',
+                '.gitignore',
+                '.npmignore',
+                'README.md',
+                'CHANGELOG.md',
+                'package.json',
+                'test/test-mymodule.js',
+                'lib/index.js'
+            ];
+
+            helpers.mockPrompt(app, {
+                'moduleName' : 'mymodule'
+            });
+
+            app.options['skip-install'] = true;
+            
+            app.run({}, function () {
+                expected.forEach(function (file) {
+                    t.ok(fs.existsSync(file), 'file exists.');
+                });
+                t.end();
+            });
+        })
     });
-    this.app.options['skip-install'] = true;
-    this.app.run({}, function () {
-      helpers.assertFile(expected);
-      done();
-    });
-  });
+
 });
