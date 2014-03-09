@@ -2,6 +2,8 @@
 
 Yeoman generator for Node.js modules.
 
+This one is based on my own preferences (stripped down) and uses tape instead of mocha.
+
 ### Install
 
 ```shell

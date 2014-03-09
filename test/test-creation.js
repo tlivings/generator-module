@@ -42,7 +42,7 @@ test('module generator', function (t) {
             });
 
             app.options['skip-install'] = true;
-            
+
             app.run({}, function () {
                 expected.forEach(function (file) {
                     t.ok(fs.existsSync(file), 'file exists.');
